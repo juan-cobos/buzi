@@ -80,6 +80,27 @@ class Signal:
         """Return the underlying array (alias of :attr:`data`)."""
         return self.data
 
+    def __getitem__(self, index) -> "Signal":
+        """Index the underlying array, returning a new ``Signal``.
+
+        Accepts any NumPy index on the ``(n_channels, n_times)`` array --
+        integers, slices, fancy/boolean masks, or a ``(channels, times)``
+        tuple -- so selection stays in the pipeline::
+
+            sig[0]            # first channel
+            sig[[0, 2]]       # a subset of channels
+            sig[:, 100:200]   # a time window across all channels
+
+        The result is promoted back to ``(n_channels, n_times)`` and keeps
+        ``fs``. Time slicing resets the time origin to zero, since ``fs`` is
+        preserved but no absolute offset is stored.
+        """
+        return Signal(self.data[index], self.fs)
+
+    def __len__(self) -> int:
+        """Number of channels."""
+        return self.data.shape[0]
+
     def __repr__(self) -> str:
         return f"Signal(shape={self.data.shape}, fs={self.fs})"
 
@@ -148,27 +169,27 @@ class Signal:
         return self.bandpass(l_freq, h_freq, order=order)
 
     def delta(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the delta band (0.5-4 Hz)."""
+        """Band-pass to the delta band."""
         return self.band("delta", order)
 
     def theta(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the theta band (4-8 Hz)."""
+        """Band-pass to the theta band."""
         return self.band("theta", order)
 
     def alpha(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the alpha band (8-12 Hz)."""
+        """Band-pass to the alpha band."""
         return self.band("alpha", order)
 
     def beta(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the beta band (12-30 Hz)."""
+        """Band-pass to the beta band."""
         return self.band("beta", order)
 
     def gamma(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the gamma band (30-100 Hz)."""
+        """Band-pass to the gamma band."""
         return self.band("gamma", order)
 
     def ripple(self, order: int = DEFAULT_ORDER) -> "Signal":
-        """Band-pass to the ripple band (150-250 Hz)."""
+        """Band-pass to the ripple band."""
         return self.band("ripple", order)
 
     def envelope(self) -> "Signal":
@@ -242,7 +263,7 @@ class Signal:
         return Signal(out[None, :], self.fs)
 
     # -- reductions out of the signal domain ------------------------------
-    def power_spectrum(self, nperseg: int = 2048):
+    def psd(self, nperseg: int = 2048):
         """Welch power spectral density of each channel.
 
         A terminal operation (like reading :attr:`data`): it leaves the signal
