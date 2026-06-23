@@ -1,0 +1,19 @@
+[project]
+name = "buzi"
+version = "0.1.0"
+description = "A tiny neurophysiological processor"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.4.6",
+    "scipy>=1.17.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ripple-detection>=1.7",
+]
+examples = [
+    "mne>=1.6",
+]
