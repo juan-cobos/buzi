@@ -116,14 +116,11 @@ class RippleDetector:
         """
         lfp = np.atleast_2d(np.asarray(lfp, dtype=float))
         times = np.arange(lfp.shape[-1]) / fs if times is None else np.asarray(times)
+        signal = Signal(lfp, fs)
         if not self.prefiltered:
-            lfp = (
-                Signal(lfp, fs)
-                .bandpass(*self.ripple_band, order=self.filter_order)
-                .data
-            )
+            signal = signal.bandpass(*self.ripple_band, order=self.filter_order)
 
-        traces = self._algo.transform(lfp, fs)
+        traces = self._algo.apply(signal)
         low, peak = self._algo.low_threshold, self._algo.peak_threshold
 
         events = (
@@ -135,7 +132,7 @@ class RippleDetector:
 
         # peak per event
         peaks = np.array(
-            [self._algo.peak_index(lfp, traces, s, e) for s, e in segs], dtype=int
+            [self._algo.peak_index(signal, traces, s, e) for s, e in segs], dtype=int
         )
         peak_z = traces.max(axis=0)[peaks] if len(peaks) else np.empty(0)
 
