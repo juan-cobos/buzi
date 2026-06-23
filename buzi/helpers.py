@@ -9,6 +9,7 @@ without them; install the extra only when you actually call a loader::
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 from buzi.signal import Signal
@@ -16,7 +17,7 @@ from buzi.signal import Signal
 __all__ = ["load_example"]
 
 
-def load_data(path: str | Path, num_channels: int):
+def load_data(path: str | Path, channels: int | Sequence[int]):
     path = Path(path)
 
     if path.suffix != ".edf":
@@ -27,7 +28,7 @@ def load_data(path: str | Path, num_channels: int):
     raw = mne.io.read_raw_edf(path)
     fs = raw.info["sfreq"]  # Hz, taken straight from the EDF header
 
-    data, _ = raw[num_channels, :]
+    data, _ = raw[channels, :]
     print(f"Loaded data shape: {data.shape}")
     return Signal(data, fs=fs)
 
