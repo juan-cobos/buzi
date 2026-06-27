@@ -1,27 +1,4 @@
-"""Composable event/interval post-processing.
-
-:class:`Events` is the interval-domain counterpart to
-:class:`buzi.signal.Signal`. Where ``Signal`` chains ``signal -> signal``
-steps, ``Events`` chains ``intervals -> intervals`` refinements. The two
-domains meet at :meth:`Events.from_threshold`, which turns a z-scored detection
-trace into a set of candidate intervals::
-
-    events = (
-        Events.from_threshold(trace, fs, low=0.0, peak=2.0)
-        .merge(min_interval=0.03)
-        .filter_duration(min_duration=0.015, max_duration=0.1)
-    )
-
-Intervals are stored as half-open ``[start, stop)`` sample-index pairs in
-:attr:`intervals`, alongside the sampling rate, so durations and gaps can be
-given in seconds. Every step mutates the set in place and returns ``self``.
-"""
-
-from __future__ import annotations
-
 import numpy as np
-
-__all__ = ["Events"]
 
 
 class Events:

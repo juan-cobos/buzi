@@ -1,41 +1,9 @@
-"""Ripple-band detection algorithms.
-
-Each algorithm is a strategy that turns filtered LFP into one or more z-scored
-*detection traces* (via a :class:`~buzi.signal.Signal` chain) and exposes the
-boundary/peak thresholds used to carve candidate intervals out of them.
-Algorithms are registered by name and looked up by
-:class:`~buzi.ripples.detector.RippleDetector`.
-
-Three ripple-power detectors ship by default:
-
-* ``"Kay"``      -- Kay et al. 2016. One consensus envelope across all
-                    channels, single z-score threshold.
-* ``"Karlsson"`` -- Karlsson & Frank 2009. Per-channel z-score, union of
-                    per-channel detections.
-* ``"Zugaro"``   -- the buzcode ``bz_FindRipples`` algorithm (squared signal,
-                    boxcar smoothing, dual 2/5-SD threshold, trough peak).
-
-Add your own with the :func:`register_algorithm` decorator; it then becomes
-selectable via ``RippleDetector(algorithm=...)``.
-"""
-
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Callable, Protocol, runtime_checkable
 
 import numpy as np
 
 from buzi.signal import Signal
-
-__all__ = [
-    "RippleAlgorithm",
-    "register_algorithm",
-    "ALGORITHMS",
-    "Kay",
-    "Karlsson",
-    "Zugaro",
-]
 
 
 @runtime_checkable

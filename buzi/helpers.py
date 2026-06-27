@@ -1,20 +1,9 @@
-"""Convenience data loaders.
-
-These helpers depend on optional third-party packages (e.g. MNE). The imports
-are done *inside* the functions so the rest of ``buzi`` stays importable
-without them; install the extra only when you actually call a loader::
-
-    uv run --group examples python -c "from buzi.helpers import load_example; load_example()"
-"""
-
-from __future__ import annotations
-
 from collections.abc import Sequence
 from pathlib import Path
 
-from buzi.signal import Signal
+import mne
 
-__all__ = ["load_example"]
+from buzi.signal import Signal
 
 
 def load_data(path: str | Path, channels: int | Sequence[int]):
@@ -22,8 +11,6 @@ def load_data(path: str | Path, channels: int | Sequence[int]):
 
     if path.suffix != ".edf":
         raise ValueError("Only edf is supported for now")
-
-    import mne
 
     raw = mne.io.read_raw_edf(path)
     fs = raw.info["sfreq"]  # Hz, taken straight from the EDF header
@@ -52,7 +39,6 @@ def load_example(subject: int = 1, runs: int | list[int] = 1) -> Signal:
     runs : int or list of int
         Run number(s) to load and concatenate.
     """
-    import mne  # optional dependency, imported on demand
 
     paths = mne.datasets.eegbci.load_data(
         subjects=subject, runs=runs, update_path=True, verbose="ERROR"

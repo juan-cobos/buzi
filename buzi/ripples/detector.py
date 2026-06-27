@@ -1,35 +1,11 @@
-"""Ripple / sharp-wave-ripple detection.
-
-:class:`RippleDetector` ties the pipeline together: band-pass the LFP, hand it
-to a detection algorithm (see :mod:`buzi.ripples.algorithms`) for a z-scored trace,
-threshold into :class:`~buzi.postprocessing.Events`, then locate per-event
-peaks. It is dependency-light (NumPy + SciPy) and operates on plain
-``(n_channels, n_times)`` arrays so the core stays testable and format-agnostic.
-
-The bundled algorithms (``"Kay"``, ``"Karlsson"``, ``"Zugaro"``) are all
-*ripple-power* detectors. The sharp-wave + ripple detector (buzcode
-``bz_DetectSWR``, which needs a separate deep channel) is a different input
-contract and is intentionally not folded into ``algorithm=``.
-
-Example
--------
->>> det = RippleDetector(algorithm="Kay")
->>> ripples = det.detect(lfp, fs=1250.0)   # lfp is (n_channels, n_times)
->>> ripples.to_dataframe()
-"""
-
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Callable
 
 import numpy as np
 
 from buzi.postprocessing import Events
-from buzi.ripples.algorithms import ALGORITHMS, register_algorithm
+from buzi.ripples.algorithms import ALGORITHMS
 from buzi.signal import Signal
-
-__all__ = ["RippleDetector", "Ripples", "register_algorithm", "ALGORITHMS"]
 
 
 @dataclass

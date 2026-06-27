@@ -1,38 +1,6 @@
-"""Functional array type for neural signals.
-
-:class:`Signal` wraps an LFP array together with its sampling rate and exposes
-the signal-conditioning steps as functional operations, in the spirit of a
-tinygrad ``Tensor``: every operation returns a *new* ``Signal`` rather than
-mutating in place, so transforms compose as a pure pipeline::
-
-    trace = (
-        Signal(lfp, fs)
-        .bandpass(150, 250)
-        .envelope()
-        .filter_gaussian(0.004)
-        .zscore()
-    )
-
-Arithmetic operators (``+ - * / **``, ``abs``, unary ``-``) broadcast over the
-underlying array and return ``Signal`` objects too, so power, ratios and the
-like read as ordinary math while staying in the pipeline::
-
-    power = Signal(lfp, fs).bandpass(150, 250) ** 2
-
-The current array is always available as :attr:`data`, shape
-``(n_channels, n_times)``; steps operate along the time axis (``axis=-1``) and
-either preserve the channel dimension or, for :meth:`combine_channels`,
-collapse it to a single consensus channel. The same building blocks back the
-detection algorithms in :mod:`buzi.ripples.algorithms`.
-"""
-
-from __future__ import annotations
-
 import numpy as np
 from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.signal import butter, hilbert, sosfiltfilt, welch
-
-__all__ = ["Signal", "BANDS", "DEFAULT_ORDER"]
 
 # Default Butterworth order for the band-pass filters.
 DEFAULT_ORDER = 4
