@@ -1,17 +1,13 @@
 [project]
 name = "buzi"
 version = "0.1.0"
-description = "A tiny neurophysiological processor"
+description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "numpy>=2.4.6",
-    "scipy>=1.17.1",
+    "numpy>=2.5.0",
+    "scipy>=1.18.0",
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
