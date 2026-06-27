@@ -1,24 +1,7 @@
-"""Compute per-band power from real EEG, end to end.
-
-:func:`buzi.helpers.load_example` only *reads* a short recording from the
-PhysioNet EEG Motor Movement/Imagery dataset (small, auto-downloaded by MNE);
-everything else -- referencing, preprocessing, band-splitting -- is done by
-chaining :class:`buzi.Signal` operations, which is the whole point of the
-library.
-
-Run with the ``examples`` dependency group, as a module from the repo root::
-
-    uv run --group examples python -m examples.eeg_bands
-
-The first run downloads ~20 MB of EDF files into MNE's data directory.
-"""
-
-from __future__ import annotations
-
 import numpy as np
 
-from buzi import BANDS, Signal
 from buzi.helpers import load_example
+from buzi.signal import BANDS, Signal
 
 
 def preprocess(raw: Signal) -> Signal:
